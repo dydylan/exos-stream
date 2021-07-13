@@ -2,12 +2,16 @@ package com.formation.app;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.IntStream;
 
 public class Exo3 {
 
     static class Personne {
-        private String nom, prenom, genre;
+        private String nom, prenom, genre, ville;
         private int annee_naissance;
+
+
+        private double salaire;
 
         public String getNom() {
             return nom;
@@ -25,6 +29,11 @@ public class Exo3 {
             return annee_naissance;
         }
 
+        public String getVille() { return ville; }
+
+        public double getSalaire() { return salaire; }
+
+
         public void setNom(String nom) {
             this.nom = nom;
         }
@@ -41,11 +50,18 @@ public class Exo3 {
             this.annee_naissance = annee_naissance;
         }
 
-        public Personne(String prenom, String nom, String genre, int annee) {
+        public void setVille(String ville) { this.ville = ville; }
+
+        public void setSalaire(double salaire) { this.salaire = salaire; }
+
+
+        public Personne(String prenom, String nom, String genre, int annee, double salaire, String ville) {
             this.nom = nom;
             this.prenom = prenom;
             this.genre = genre;
             annee_naissance = annee;
+            this.salaire = salaire;
+            this.ville = ville;
         }
 
         @Override
@@ -54,6 +70,7 @@ public class Exo3 {
                     "nom='" + nom + '\'' +
                     ", prenom='" + prenom + '\'' +
                     ", genre='" + genre + '\'' +
+                    ", ville='" + ville + '\'' +
                     ", annee_naissance=" + annee_naissance +
                     '}';
         }
@@ -61,17 +78,15 @@ public class Exo3 {
 
     public static void main(String[] args) {
         List<Personne> persons = List.of(
-                new Personne ("Laure", "BARBE", "F", 1994),
-                new Personne ("Rihab", "BETTAIEB",  "F",1991),
-                new Personne ("Aurelien", "DEMOLY", "H", 1993),
-                new Personne ("Tanguy" , "NGUYEN", "H", 1992),
-                new Personne ("Laura", "TENET", "F", 1995),
-                new Personne ("Matthieu", "BILLAUD", "H", 1992),
-                new Personne ("Martin", "TOGNETTI", "h", 1988),
-                new Personne ("Simon", "MAILLARD", "H", 1975),
-                new Personne ("Baptiste", "BLANCHET", "A", 1985),
-                new Personne ("Michel", "HADOCK", "A", 1985)
-                new Personne ("Jean", "HADOCK", "H", 1975),
+                new Personne ("Laure", "BARBE", "F", 1994, 2360.50, "Nantes"),
+                new Personne ("Rihab", "BETTAIEB",  "F",1991, 2040.90, "Nantes"),
+                new Personne ("Aurelien", "DEMOLY", "H", 1993, 2000.0, "Rennes"),
+                new Personne ("Tanguy" , "NGUYEN", "H", 1992, 2300.0, "Lille"),
+                new Personne ("Laura", "TENET", "F", 1995, 2205.89, "Lyon"),
+                new Personne ("Matthieu", "BILLAUD", "H", 1992, 2650.70, "Paris"),
+                new Personne ("Martin", "TOGNETTI", "h", 1988, 1980.0, "Bordeaux"),
+                new Personne ("Simon", "MAILLARD", "H", 1975, 3022.39, "Lyon"),
+                new Personne ("Baptiste", "BLANCHET", "A", 1985, 2380.70, "Lyon")
         );
 
         System.out.println("Les personnes nées après 1991 :");
@@ -113,8 +128,19 @@ public class Exo3 {
         System.out.println();
         System.out.println("Le genre en lettre minuscule de ceux ayant un genre \"h\".");
         persons.stream()
-                .filter(p ->p.getGenre().equals("H"))
-                .map(Personne::getGenre)
+                .map(p ->{
+                    p.setGenre(p.getGenre().toLowerCase());
+                    return p;
+                })
+                .filter(p -> p.getGenre().equals("h"))
                 .forEach(System.out::println);
+
+
+        System.out.println();
+        System.out.println("La moyenne des salaires dans la ville de Lyon");
+        persons.stream()
+                .filter(personne -> personne.getVille().equals("Lyon"))
+                .mapToDouble(Personne::getSalaire).average()
+                .ifPresent(System.out::println);
     }
 }
